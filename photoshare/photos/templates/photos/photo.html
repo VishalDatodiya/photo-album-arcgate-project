@@ -15,13 +15,9 @@
             <div class="col-md-6">
                 <a href="{% url 'gallery' %}" class="btn btn-dark my-3">Go Back</a>
                 <div style="height: 90vh;">
-                    <img style="max-width: 100%; max-height:100%"
-                        src="https://i.natgeofe.com/n/548467d8-c5f1-4551-9f58-6817a8d2c45e/NationalGeographic_2572187_square.jpg"
-                        alt="">
+                    <img style="max-width: 100%; max-height:100%" src=" {{ photo.image.url }}" alt="">
 
-                    <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Exercitationem tempore ut eveniet ex
-                        commodi totam suscipit quasi ab porro! Molestiae laudantium delectus unde consectetur, ea
-                        voluptates nulla earum voluptatibus molestias!</p>
+                    <p>{{ photo.description }}</p>
 
                 </div>
 
