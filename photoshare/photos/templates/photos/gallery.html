@@ -1,70 +1,68 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'photos/base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+{% block content %}
+
 
     <style>
         .image-thumbnail {
             height: 200px;
             object-fit: cover;
         }
-
-        a {
-            text-decoration: none;
-            color: #000;
-        }
     </style>
 
-</head>
-
-<body class="m-5">
     <div class="container">
         <div class="row">
             <div class="col-md-3">
-                <div class="card" style="width: 18rem;">
+                <div class="card m-2">
                     <div class="card-header">
                         Category
                     </div>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">
-                            <a href="{% url 'gallery' %}">All</a>
-                        </li>
-                        {% for category in categories %}
-                        <li class="list-group-item">
-                            <a href="{% url 'gallery' %}?category={{category.name}}">{{ category.name }}</a>
-                        </li>
-                        {% endfor %}
-                        <a href="{% url 'add' %}" class="btn btn-dark btn-block btn-sm">Add Photo</a>
+                            <form action="{% url 'gallery' %}" method="GET">
+                                <input name="category" placeholder="Search for posts"/>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="{% url 'gallery' %}">All</a>
+                            </li>
 
-                    </ul>
-                </div>
-            </div>
-            <div class="col-md-9">
-                <div class="row">
-                    {% for photo in photos %}
-                    <div class="col-md-4">
-                        <div class="card" style="width: 18rem;">
-                            <img src="{{ photo.image.url }}" class="image-thumbnail" alt="...">
-                            <div class="card-body">
-                                <p>Category: {{ photo.category.name }}</p>
-                            </div>
-                            <a href="{% url 'photo' photo.id %}" class="btn btn-outline-dark btn-sm m-1">View</a>
-                        </div>
+                            {% for category in categories %}
+                                <li class="list-group-item">
+                                    <a href="{% url 'gallery' %}?category={{ category.name }}">{{ category.name }}</a>
+                                </li>
+                            {% endfor %}
+                            <a href="{% url 'add' %}" class="btn btn-dark btn-block btn-sm">Add Photo</a>
+
+                        </ul>
                     </div>
-                    {% empty %}
-                    <h1>No Photo</h1>
-                    {% endfor %}
+                </div>
+                <div class="col-md-9">
+                    <div class="row">
+                        {% for photo in photos %}
+                            <div class="col-md-4">
+                                <div class="card m-2">
+                                    <img src="{{ photo.image.url }}" class="image-thumbnail" alt="...">
+                                        <div class=" mt-2 mx-2">
+                                            <p>Category :
+                                                {{ photo.category.name }}</p>
+                                        </div>
+                                        <div class="mx-2">
+                                            <a href="{% url 'edit' photo.id %}" class="btn btn-dark btn-sm m-1">Edit</a>
+                                            <a href="{% url 'delete' photo.id %}" class="btn btn-dark btn-sm m-1">Delete</a>
+                                        </div>
+                                        <a href="{% url 'photo' photo.id %}" class="btn btn-outline-dark btn-sm m-1">View</a>
+                                    </div>
+                                </div>
+                                {% empty %}
+                                <h1>No Photo</h1>
+                            {% endfor %}
+                        </div>
+                        <div class="my-4">
+                            {% include 'photos/pagination.html' %}
+                        </div>
+
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-    </div>
 
-</body>
-
-</html>
+        {% endblock %}

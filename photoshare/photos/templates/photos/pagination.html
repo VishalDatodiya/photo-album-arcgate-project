@@ -1,0 +1,45 @@
+{% block content %}
+
+    <nav aria-label="...">
+        <ul class="pagination justify-content-center">
+            {% if photos.has_previous %}
+
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ photos.previous_page_number }}">Previous</a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="?page=1">Previous</a>
+                </li>
+            {% endif %}
+
+            <!-- List of the objects -->
+            <!-- counting how many page will be created according to our database -->
+
+            {% for i in photos.paginator.page_range %}
+                {% if photos.number == i %}
+                    <li class="page-item active">
+                        <a class="page-link" href="#">{{ i }}</a>
+                    </li>
+                {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if photos.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ photos.next_page_number }}">Next</a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#">Next</a>
+                </li>
+            {% endif %}
+
+
+        </ul>
+    </nav>
+
+{% endblock %}

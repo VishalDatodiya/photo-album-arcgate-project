@@ -2,6 +2,14 @@ from django.shortcuts import render, redirect
 
 from .models import Category, Photo
 
+# pagination
+from django.core.paginator import Paginator
+
+# Forms
+from .forms import PhotoForm
+
+# from django.db.models.functions import Lower
+
 
 def gallery(request):
     
@@ -9,11 +17,20 @@ def gallery(request):
     if category == None:
         photos = Photo.objects.all()
     else:
-        photos = Photo.objects.filter(category__name=category)
-    categories = Category.objects.all()
+        photos = Photo.objects.filter(category__name__icontains=category)
+    categories = Category.objects.extra(\
+    select={'lower_name':'lower(name)'}).order_by('lower_name')
+    # categories = Category.objects.all(lower_name=Lower('name')).order_by('-name')
+
+    # pagination 
+    paginator = Paginator(photos, 6)
+    page_numer = request.GET.get('page')
+    page_data = paginator.get_page(page_numer)
+
     context = {
         'categories' : categories,
-        'photos' : photos,
+        # 'photos' : photos,
+        'photos' : page_data
     }
     return render(request, 'photos/gallery.html', context)
 
@@ -48,3 +65,22 @@ def addPhoto(request):
         'categories' : categories,
     }
     return render(request, 'photos/add.html', context)
+
+
+def updatePhoto(request,pk):
+    photo = Photo.objects.get(pk=pk)
+    form = PhotoForm(instance=photo)
+    
+    context = {
+        'photo' : photo,
+        'form': form
+    }
+    return render(request, 'photos/edit.html', context)
+
+
+
+def delete_photo(request, pk):
+    photo = Photo.objects.get(pk=pk)
+    photo.delete()
+    return redirect('gallery')
+    

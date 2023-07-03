@@ -1,0 +1,21 @@
+{% block content %}
+    <style>
+        .navbar-brand {
+            color: #fff;
+        }
+    </style>
+
+    <nav class="navbar navbar-light bg-dark">
+        <div class="container-fluid px-10 ">
+            <div>
+                <a class="navbar-brand text-white bg-dark" href="{% url 'gallery' %}">Arcgate</a>
+            </div>
+            <div class="">
+                <a class="btn btn-primary mx-3" href="{% url 'add' %}">Add Photo</a>
+                <a class="btn btn-success" href="{% url 'add' %}">Login</a>
+                <a class="btn btn-success" href="{% url 'add' %}">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+{% endblock %}
