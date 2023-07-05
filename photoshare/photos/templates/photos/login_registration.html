@@ -1,0 +1,29 @@
+{% extends 'photos/base.html' %}
+
+{% block content %}
+
+    <div class="container">
+        <div class="card" style="width:18rem;">
+            <h1>Login Page</h1>
+            <form action="" method="POST">
+                {% csrf_token %}
+                <label for="">Enter your Username :
+                </label>
+                <br>
+
+                    <input type="text" name="username"/>
+                    <br>
+                        <label for="">Enter your Password :
+                        </label>
+
+                        <br>
+                            <input type="password" name="password"/>
+                            <br>
+                                <br>
+                                    <button type="submit">Login</button>
+
+                                </form>
+                            </div>
+                        </div>
+
+                    {% endblock %}

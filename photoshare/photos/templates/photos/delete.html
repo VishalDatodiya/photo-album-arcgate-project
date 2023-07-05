@@ -1,0 +1,24 @@
+{% extends 'photos/base.html' %}
+
+
+{% block content %}
+
+    <div class="container">
+        <form class="form" action="" method="POST">
+            {% csrf_token %}
+            <div class="card m-5" style="width: 18rem;">
+                <div class="m-1">
+                    <p>Are you sure you want to delete ?</p>
+                </div>
+
+                <div class="m-2">
+                    <a href="{% url 'gallery' %}" class="btn btn-dark btn-sm">Go Back</a>
+                    <input class="btn btn-dark btn-sm" type="submit" value="Confirm"/>
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+
+{% endblock %}

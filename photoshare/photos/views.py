@@ -8,7 +8,37 @@ from django.core.paginator import Paginator
 # Forms
 from .forms import PhotoForm
 
-# from django.db.models.functions import Lower
+# flash messages 
+from django.contrib import messages
+
+# Authentication
+from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.models import User
+
+
+def loginPage(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        try:
+            user = User.objects.get(username=username)
+        except:
+            messages.error(request, "Username does not exist")
+
+        user = authenticate(request, username=username, password=password)
+        if user:
+            login(request, user)
+            return redirect('gallery')
+        else:
+            messages.error(request, "password does not match")
+
+    return render(request, 'photos/login_registration.html')
+
+def logoutPage(request):
+    # it will delete the session or token  -> inspect - > application -> coockies
+    logout(request)
+    return redirect('gallery')
 
 
 def gallery(request):
@@ -74,7 +104,13 @@ def addPhoto(request):
 def updatePhoto(request,pk):
     photo = Photo.objects.get(pk=pk)
     form = PhotoForm(instance=photo)
-    
+
+    if request.method == 'POST':
+        form = PhotoForm(request.POST, request.FILES, instance=photo)
+        if form.is_valid():
+            form.save()
+            return redirect('gallery')
+        
     context = {
         'photo' : photo,
         'form': form,
@@ -85,6 +121,9 @@ def updatePhoto(request,pk):
 
 def delete_photo(request, pk):
     photo = Photo.objects.get(pk=pk)
-    photo.delete()
-    return redirect('gallery')
+    if request.method == 'POST':
+        photo.delete()
+        return redirect('gallery')
+
+    return render(request,'photos/delete.html', {'photo': photo})
     
