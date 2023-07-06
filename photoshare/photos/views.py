@@ -25,6 +25,9 @@ from django.contrib.auth .forms import UserCreationForm
 
 def loginPage(request):
 
+    if request.user.is_authenticated:
+        return redirect('gallery')
+
     page = 'login'
 
     if request.method == 'POST':
@@ -77,6 +80,7 @@ def userRegistration(request):
 def gallery(request):
     
     category = request.GET.get('category')
+    
     if category == None:
         photos = Photo.objects.all()
     else:
@@ -88,11 +92,14 @@ def gallery(request):
     paginator = Paginator(photos, 6)
     page_numer = request.GET.get('page')
     page_data = paginator.get_page(page_numer)
+    
+    photo_count = photos.count()
 
     context = {
         'categories' : categories,
         # 'photos' : photos,
-        'photos' : page_data
+        'photos' : page_data,
+        'photo_count' : photo_count,
     }
     return render(request, 'photos/gallery.html', context)
 
@@ -122,6 +129,7 @@ def addPhoto(request):
         category, created = Category.objects.get_or_create(name=category_name)
 
         photo = Photo.objects.create(
+            user = request.user,
             category = category,
             description = data['description'],
             image = image
@@ -134,30 +142,34 @@ def addPhoto(request):
     }
     return render(request, 'photos/add.html', context)
 
-
+@login_required(login_url='/login')
 def updatePhoto(request,pk):
     photo = Photo.objects.get(pk=pk)
     form = PhotoForm(instance=photo)
-
-    if request.method == 'POST':
-        form = PhotoForm(request.POST, request.FILES, instance=photo)
-        if form.is_valid():
-            form.save()
-            return redirect('gallery')
-        
-    context = {
-        'photo' : photo,
-        'form': form,
-    }
-    return render(request, 'photos/edit.html', context)
-
-
-
-def delete_photo(request, pk):
-    photo = Photo.objects.get(pk=pk)
-    if request.method == 'POST':
-        photo.delete()
+    if request.user == photo.user:
+        if request.method == 'POST':
+            form = PhotoForm(request.POST, request.FILES, instance=photo)
+            if form.is_valid():
+                form.save()
+                return redirect('gallery')
+            
+        context = {
+            'photo' : photo,
+            'form': form,
+        }
+        return render(request, 'photos/edit.html', context)
+    else:
         return redirect('gallery')
 
-    return render(request,'photos/delete.html', {'photo': photo})
-    
+
+@login_required(login_url='/login')
+def delete_photo(request, pk):
+    photo = Photo.objects.get(pk=pk)
+    if request.user == photo.user:
+        if request.method == 'POST':
+            photo.delete()
+            return redirect('gallery')
+
+        return render(request,'photos/delete.html', {'photo': photo})
+    else:
+        return redirect('gallery')

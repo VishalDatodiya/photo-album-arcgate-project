@@ -1,24 +1,19 @@
-{% extends 'photos/base.html' %}
+{% extends 'photos/base.html' %} {% block content %}
 
-{% block content %}
-
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-4">
-                <a href="{% url 'gallery' %}" class="btn btn-dark my-3">Go Back</a>
-                <div class="card" style="width: 460px;">
-                    <h1 class="text-center">Update Form</h1>
-                    <form action="" method="POST" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <div class="m-3">
-                            {{ form.as_p }}
-                        </div>
-                        <button type="submit" class="btn btn-primary m-3">Submit</button>
-
-                    </form>
-                </div>
-            </div>
-        </div>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-4">
+      <div class="card" style="width: 460px">
+        <h1 class="text-center">Update Form</h1>
+        <form action="" method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="m-3">{{ form.as_p }}</div>
+          <a href="{% url 'gallery' %}" class="btn btn-dark my-3">cancel</a>
+          <button type="submit" class="btn btn-primary m-3">Submit</button>
+        </form>
+      </div>
     </div>
+  </div>
+</div>
 
 {% endblock %}

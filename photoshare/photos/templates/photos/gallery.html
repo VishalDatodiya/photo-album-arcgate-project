@@ -38,10 +38,12 @@
                     <div class="card m-2">
                         <img src="{{ photo.image.url }}" class="image-thumbnail" alt="...">
                         <div class=" mt-2 mx-2">
+                            <p>@{{ photo.user }}</p>
                             <p>Category :
-                                {{ photo.category.name }}</p>
+                                {{ photo.category.name }}
+                            </p>
                         </div>
-                        {% if request.user.is_authenticated %}
+                        {% if request.user == photo.user %}
                         <div class="mx-2">
                             <a href="{% url 'edit' photo.id %}" class="btn btn-dark btn-sm m-1">Edit</a>
                             <a href="{% url 'delete' photo.id %}" class="btn btn-dark btn-sm m-1">Delete</a>
@@ -51,19 +53,19 @@
                     </div>
                 </div>
                 {% empty %}
-                <row class="justify-content-center">
+                <div class="justify-content-center">
                     <div class="col-md-6 ">
                         <div class="alert alert-success" role="alert">
                             <p>Sorry there is no photo available for now.</p>
                         </div>
                     </div>
-                </row>
+                </div>
                 {% endfor %}
-
+                {% if photo_count > 2 %}
                 <div class="my-4">
                     {% include 'photos/pagination.html' %}
                 </div>
-
+                {% endif %}
 
             </div>
         </div>
