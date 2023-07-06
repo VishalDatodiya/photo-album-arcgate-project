@@ -2,68 +2,72 @@
 
 {% block content %}
 
+{{ request.user }}
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card m-2">
+                <div class="card-header">
+                    Category
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <form action="{% url 'gallery' %}" method="GET">
+                            <input name="category" placeholder="Search for posts" />
+                    </li>
+                    <li class="list-group-item">
+                        <a href="{% url 'gallery' %}">All</a>
+                    </li>
 
-    <div class="container">
-        <div class="row">
-            <div class="col-md-3">
-                <div class="card m-2">
-                    <div class="card-header">
-                        Category
-                    </div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">
-                            <form action="{% url 'gallery' %}" method="GET">
-                                <input name="category" placeholder="Search for posts"/>
-                            </li>
-                            <li class="list-group-item">
-                                <a href="{% url 'gallery' %}">All</a>
-                            </li>
+                    {% for category in categories %}
+                    <li class="list-group-item">
+                        <a href="{% url 'gallery' %}?category={{ category.name }}">{{ category.name }}</a>
+                    </li>
+                    {% endfor %}
+                    <a href="{% url 'add' %}" class="btn btn-dark btn-block btn-sm">Add Photo</a>
 
-                            {% for category in categories %}
-                                <li class="list-group-item">
-                                    <a href="{% url 'gallery' %}?category={{ category.name }}">{{ category.name }}</a>
-                                </li>
-                            {% endfor %}
-                            <a href="{% url 'add' %}" class="btn btn-dark btn-block btn-sm">Add Photo</a>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="row">
 
-                        </ul>
+
+                {% for photo in photos %}
+                <div class="col-md-4">
+                    <div class="card m-2">
+                        <img src="{{ photo.image.url }}" class="image-thumbnail" alt="...">
+                        <div class=" mt-2 mx-2">
+                            <p>Category :
+                                {{ photo.category.name }}</p>
+                        </div>
+                        {% if request.user.is_authenticated %}
+                        <div class="mx-2">
+                            <a href="{% url 'edit' photo.id %}" class="btn btn-dark btn-sm m-1">Edit</a>
+                            <a href="{% url 'delete' photo.id %}" class="btn btn-dark btn-sm m-1">Delete</a>
+                        </div>
+                        {% endif %}
+                        <a href="{% url 'photo' photo.id %}" class="btn btn-outline-dark btn-sm m-1">View</a>
                     </div>
                 </div>
-                <div class="col-md-9">
-                    <div class="row">
-                        {% for photo in photos %}
-                            <div class="col-md-4">
-                                <div class="card m-2">
-                                    <img src="{{ photo.image.url }}" class="image-thumbnail" alt="...">
-                                        <div class=" mt-2 mx-2">
-                                            <p>Category :
-                                                {{ photo.category.name }}</p>
-                                        </div>
-                                        {% if request.user.is_authenticated %}
-                                            <div class="mx-2">
-                                                <a href="{% url 'edit' photo.id %}" class="btn btn-dark btn-sm m-1">Edit</a>
-                                                <a href="{% url 'delete' photo.id %}" class="btn btn-dark btn-sm m-1">Delete</a>
-                                            </div>
-                                        {% endif %}
-                                        <a href="{% url 'photo' photo.id %}" class="btn btn-outline-dark btn-sm m-1">View</a>
-                                    </div>
-                                </div>
-                                {% empty %}
-                                <row class="justify-content-center">
-                                    <div class="col-md-6 ">
-                                        <div class="alert alert-success" role="alert">
-                                            <p>Sorry there is no photo available for now.</p>
-                                        </div>
-                                    </div>
-                                </row>
-                            {% endfor %}
-                            <div class="my-4">
-                                {% include 'photos/pagination.html' %}
-                            </div>
-
+                {% empty %}
+                <row class="justify-content-center">
+                    <div class="col-md-6 ">
+                        <div class="alert alert-success" role="alert">
+                            <p>Sorry there is no photo available for now.</p>
                         </div>
                     </div>
-                </div>
-            </div>
+                </row>
+                {% endfor %}
 
-        {% endblock %}
+                <div class="my-4">
+                    {% include 'photos/pagination.html' %}
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

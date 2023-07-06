@@ -16,9 +16,19 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User
 
 
+# Authenticatetion
+from django.contrib.auth.decorators import login_required
+
+from django.contrib.auth .forms import UserCreationForm
+
+
+
 def loginPage(request):
+
+    page = 'login'
+
     if request.method == 'POST':
-        username = request.POST.get('username')
+        username = request.POST.get('username').lower()
         password = request.POST.get('password')
 
         try:
@@ -33,13 +43,36 @@ def loginPage(request):
         else:
             messages.error(request, "password does not match")
 
-    return render(request, 'photos/login_registration.html')
+    context = {
+        'page' : page,
+    }
+
+    return render(request, 'photos/login_registration.html', context)
 
 def logoutPage(request):
     # it will delete the session or token  -> inspect - > application -> coockies
     logout(request)
     return redirect('gallery')
 
+
+def userRegistration(request):
+    form = UserCreationForm()
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.username = user.username.lower()
+            user.save()
+            login(request, user)
+            return redirect('gallery')
+        else:
+            messages.error(request, 'An error Occurred during Registration. Please Try again!')
+
+
+    context = {
+        'form' : form,
+    }
+    return render(request, 'photos/login_registration.html', context)
 
 def gallery(request):
     
@@ -70,6 +103,7 @@ def viewPhoto(request, pk):
     } 
     return render(request, 'photos/photo.html', context)
 
+@login_required(login_url='/login')
 def addPhoto(request):
     categories = Category.objects.all()
     form = PhotoForm()
