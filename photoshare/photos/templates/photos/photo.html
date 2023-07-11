@@ -2,20 +2,22 @@
 
 {% block content %}
 
-    <div class="container">
-        <div class="row justify-content-center ">
-            <div class="col-md-6">
-                <a href="{% url 'gallery' %}" class="btn btn-dark my-3">Go Back</a>
-                <div style="height: 90vh;">
-                    <img style="max-width: 100%; max-height:100%" src=" {{ photo.image.url }}" alt="">
+<div class="container">
+    <a href="{% url 'gallery' %}" class="btn btn-dark my-3">Go Back</a>
+    <div class="row justify-content-center ">
+        <div class="col-md-6">
 
-                        <p>{{ photo.description }}</p>
+            <div style="height: 100vh;">
+                <img style="max-width: 100%; max-height:100%" src=" {{ photo.image.url }}" alt="">
+               
+                <p>{{ photo.description }}</p>
 
-                    </div>
-
-                </div>
-
+                <p>{{ photo.place }}</p>
             </div>
+
         </div>
 
-    {% endblock %}
+    </div>
+</div>
+
+{% endblock %}

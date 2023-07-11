@@ -1,5 +1,5 @@
 {% block content %}
-
+{% load static %}
 <nav class="navbar navbar-light bg-dark">
     <div class="container-fluid px-10 ">
         <div>
@@ -9,7 +9,15 @@
             <a class="btn btn-primary mx-3" href="{% url 'add' %}">Add Photo</a>
 
             {% if request.user.is_authenticated %}
-            <a class="btn btn-success" href="{% url 'logout' %}">Logout</a>
+
+            <div class="dropdown">
+                <!-- <button class="dropbtn">Profile</button> -->
+                <img src="{% static 'images/avatar.jpg' %}" alt="No-photo" class="profile-image">
+                <div class="dropdown-content">
+                    <a class="btn-danger" href="#">Edit</a>
+                    <a class="btn-danger" href="{% url 'logout' %}">Logout</a>
+                </div>
+            </div>
             {% else %}
             <a class="btn btn-success" href="{% url 'login' %}">Login</a>
             {% endif %}

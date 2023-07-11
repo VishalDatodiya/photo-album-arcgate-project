@@ -7,6 +7,7 @@ from django.core.paginator import Paginator
 
 # Forms
 from .forms import PhotoForm
+from django.contrib.auth.forms import UserCreationForm
 
 # flash messages 
 from django.contrib import messages
@@ -14,12 +15,8 @@ from django.contrib import messages
 # Authentication
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User
-
-
-# Authenticatetion
 from django.contrib.auth.decorators import login_required
 
-from django.contrib.auth .forms import UserCreationForm
 
 
 
@@ -58,6 +55,18 @@ def logoutPage(request):
     return redirect('gallery')
 
 
+def userProfile(request, pk):
+    user = User.objects.get(pk=pk)
+    # getting the values of particular users data that what it added.
+    # The _set is a reverse lookup class variable django puts in for you.
+    # here photo_set.all  => photo is model and using _set, all is method
+    photos = user.photo_set.all()
+    context = {
+        'user': user,
+        'photos': photos,
+    }
+    return render(request, 'photos/profile.html', context)
+
 def userRegistration(request):
     form = UserCreationForm()
     if request.method == 'POST':
@@ -89,7 +98,7 @@ def gallery(request):
     # categories = Category.objects.all(lower_name=Lower('name')).order_by('-name')
 
     # pagination 
-    paginator = Paginator(photos, 6)
+    paginator = Paginator(photos, 9)
     page_numer = request.GET.get('page')
     page_data = paginator.get_page(page_numer)
     
@@ -132,7 +141,8 @@ def addPhoto(request):
             user = request.user,
             category = category,
             description = data['description'],
-            image = image
+            image = image,
+            place = data['place']
         )
         return redirect('gallery')
         
@@ -166,10 +176,10 @@ def updatePhoto(request,pk):
 def delete_photo(request, pk):
     photo = Photo.objects.get(pk=pk)
     if request.user == photo.user:
-        if request.method == 'POST':
-            photo.delete()
-            return redirect('gallery')
-
-        return render(request,'photos/delete.html', {'photo': photo})
+        # if request.method == 'POST':
+        photo.delete()
+        return redirect('gallery')
+        
+        # return render(request,'photos/delete.html', {'photo': photo})
     else:
         return redirect('gallery')
