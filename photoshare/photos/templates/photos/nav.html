@@ -12,9 +12,10 @@
 
             <div class="dropdown">
                 <!-- <button class="dropbtn">Profile</button> -->
-                <img src="{% static 'images/avatar.jpg' %}" alt="No-photo" class="profile-image">
+                <a href="{% url 'profile' request.user.id %}"><img src="{{ request.user.avatar.url }}" alt="No-photo"
+                        class="profile-image"></a>
                 <div class="dropdown-content">
-                    <a class="btn-danger" href="#">Edit</a>
+                    <a class="btn-danger" href="{% url 'user-update' %}">Edit</a>
                     <a class="btn-danger" href="{% url 'logout' %}">Logout</a>
                 </div>
             </div>

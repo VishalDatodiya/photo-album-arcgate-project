@@ -8,31 +8,41 @@
 
     {% if page == 'login' %}
 
-    <div class="card" style="width:18rem;">
+    <div class="card m-2 p-2" style="width:18rem;">
         <h1>Login Page</h1>
         <form action="" method="POST">
             {% csrf_token %}
-            <label for="">Enter your Username :</label>
+            <label for="">Enter your Email :</label>
             <br>
-            <input type="text" name="username" /><br>
+            <input type="email" name="email" /><br>
             <label for="">Enter your Password :</label><br>
             <input type="password" name="password" /><br><br>
-            <button type="submit">Login</button>
+            <button type="submit" class="btn btn-success btn-sm m-1">Login</button>
         </form>
-        <small>Haven't Signup yet?</small>
-        <a href="{% url 'register' %}" class="btn btn-success btn-sm m-1">Signup</a>
+        <small>Haven't Signup yet?
+            <a href="{% url 'register' %}" class="btn btn-success btn-sm m-1">Signup</a></small>
 
 
         {% else %}
         <!-- user Registration -->
 
-        <form action="" method="POST">
-            {% csrf_token %}
-            {{form.as_p}}
-            <button type="submit">Login</button>
-        </form><br>
-        <small>Already Signup?</small>
-        <a href="{% url 'login' %}" class="btn btn-success btn-sm m-1">Login</a>
+        <div class="card" style="width: 450px;">
+            <form action="" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <h1 class="m-3">SignUp Page</h1>
+                {% for field in form %}
+                <div class="form_group">
+                    <label for=""><b>{{ field.label }}</b></label>
+                    <div class="m-1">{{ field }}</div>
+                </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-success btn-sm m-1">Submit</button>
+            </form>
+
+            <div><small>Already Signup?</small><a href="{% url 'login' %}" class="btn btn-success btn-sm m-1">Login</a>
+            </div>
+
+        </div>
 
     </div>
     {% endif %}

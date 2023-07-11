@@ -1,20 +1,20 @@
 from django.shortcuts import render, redirect
 
-from .models import Category, Photo
+from .models import Category, Photo, User
 
 # pagination
 from django.core.paginator import Paginator
 
 # Forms
-from .forms import PhotoForm
-from django.contrib.auth.forms import UserCreationForm
+from .forms import PhotoForm, UserForm, UserUpdateForm
+# from django.contrib.auth.forms import UserCreationForm
 
 # flash messages 
 from django.contrib import messages
 
 # Authentication
 from django.contrib.auth import login, logout, authenticate
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 
 
@@ -28,15 +28,16 @@ def loginPage(request):
     page = 'login'
 
     if request.method == 'POST':
-        username = request.POST.get('username').lower()
+        # username = request.POST.get('username').lower()
+        email = request.POST.get('email')
         password = request.POST.get('password')
 
         try:
-            user = User.objects.get(username=username)
+            user = User.objects.get(email=email)
         except:
-            messages.error(request, "Username does not exist")
+            messages.error(request, "User does not exist")
 
-        user = authenticate(request, username=username, password=password)
+        user = authenticate(request, email=email, password=password)
         if user:
             login(request, user)
             return redirect('gallery')
@@ -68,12 +69,12 @@ def userProfile(request, pk):
     return render(request, 'photos/profile.html', context)
 
 def userRegistration(request):
-    form = UserCreationForm()
+    form = UserForm()
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = UserForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
-            user.username = user.username.lower()
+            # user.username = user.username.lower()
             user.save()
             login(request, user)
             return redirect('gallery')
@@ -85,6 +86,23 @@ def userRegistration(request):
         'form' : form,
     }
     return render(request, 'photos/login_registration.html', context)
+
+def userUpdate(request):
+    user_name = request.user
+    form = UserUpdateForm(instance=user_name)
+    # if request.user.is_authenticated:
+    #     return redirect('gallery')
+
+    if request.method == 'POST':
+        form = UserUpdateForm(request.POST, request.FILES, instance=user_name)
+        if form.is_valid(): 
+            form.save(commit=False)
+            return redirect('gallery')
+    context = {
+        'form':form,
+    }
+    return render(request, 'photos/update_profile.html', context)
+
 
 def gallery(request):
     

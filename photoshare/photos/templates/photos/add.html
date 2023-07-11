@@ -3,9 +3,11 @@
 <div class="container">
   <div class="row justify-content-center">
     <div class="col-md-4">
-      <div class="card">
+      <div class="card my-3">
         <form action="" method="POST" enctype="multipart/form-data">
           {% csrf_token %}
+
+          <h1 class="m-4">Add the Photo</h1>
 
           <div class="form-group m-3">
             <label>Description</label>
